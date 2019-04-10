@@ -29,12 +29,13 @@ def terrain(x,y,z):
 
 def line(x,y,z):
     if abs(y) < 1:
-        if abs(z-x) < 1:
+        if abs(z-x) < 2:
             return 1
         else:
             return -1
     else:
         return -1
+    
 
 def makeGradients(f,x,y,z):
     c = 0.01
@@ -99,7 +100,7 @@ def find_vertex_in_voxel(f,x,y,z):
     if len(change) <= 1:
         return None
     #print(len(change))
-    #get normals from gradients (actually gradients == normals)
+    #get normals from gradients (actually gradients == normals, because the generated surface is on the sign change point, so the normal of the surface is the direction the value decreases a.k.a gradients)
     normals = []
     for v in change:
         n = makeGradients(f,v[0],v[1],v[2])
@@ -182,6 +183,8 @@ def dual_contouring(f,xmin,xmax,ymin,ymax,zmin,zmax,vdata):
     print(len(faces))
     return faces
             
+def destroyWindow(get):
+    get.destroy()
 
 class myapp(ShowBase):
     def __init__(self):
@@ -192,9 +195,12 @@ class myapp(ShowBase):
         vdata.setNumRows(2000)
         
         #Enter your function as the first argument here
-        faces = dual_contouring(line,xmin,xmax,ymin,ymax,zmin,zmax,vdata)
+        faces = dual_contouring(terrain,xmin,xmax,ymin,ymax,zmin,zmax,vdata)
         node = make_mesh(vdata, faces)
         self.render.attachNewNode(node)
+        par = []
+        par.append(self)
+        self.accept("q",destroyWindow,par)
 
 
 app = myapp()
