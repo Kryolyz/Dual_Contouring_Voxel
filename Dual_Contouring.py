@@ -129,8 +129,8 @@ def find_vertex_in_voxel(f,x,y,z,stepsize,cx,cy,cz):
                 
     if len(change) <= 1:
         return None
-#    else:
-#        return (x,y,z)
+    else:
+        return (x,y,z)
     #print(len(change))
     #get normals from gradients (actually gradients == normals, because the generated surface is on the sign change point, so the normal of the surface is the direction the value decreases a.k.a gradients)
     normals = []
@@ -173,7 +173,7 @@ def dual_contouring(f,xmin,xmax,ymin,ymax,zmin,zmax,vdata,stepsize):
                     continue
                 
                 vertexd.add_data3f(vert[0],vert[1],vert[2])
-                colord.add_data4f(stepsize/6,stepsize/6,stepsize/6,1)
+                colord.add_data4f(abs(z)/5,abs(z)/5,abs(z)/5,1)
                 if vertexd.getWriteRow() % 4 == 0:
 #                    colord.add_data4f(1,1,1,1)
                     texcoordd.add_data2f(0,0)
@@ -190,8 +190,7 @@ def dual_contouring(f,xmin,xmax,ymin,ymax,zmin,zmax,vdata,stepsize):
                     edge_vertices[x,y,z] = vert
                 vert_indices[coord] = len(vert_array)
                 vert_array[coord] = vert
-    #print("Num Vertices:")
-    #print(vertexd.getWriteRow())
+                
     faces = []
     for x in range(xmin,xmax,stepsize):
         for y in range(ymin,ymax,stepsize):
@@ -222,15 +221,10 @@ def dual_contouring(f,xmin,xmax,ymin,ymax,zmin,zmax,vdata,stepsize):
                                                vert_indices[(x,y-0,z-stepsize)],
                                                vert_indices[(x,y-0,z-0)],
                                                vert_indices[(x,y-stepsize,z-0)],inside2,vdata))
-    #print("Num Faces:")
-    #print(len(faces))
+                        
     return faces,edge_vertices.copy()  
     
 def stitch(f,vertices,vdata,difx,dify,difz,dist,stepsize):
-#    i = 0
-#    b = 0
-#    c = 0
-#    d = 0
     faces = []
     all_vertices = {}
     vdata.setNumRows(2000)
@@ -242,11 +236,6 @@ def stitch(f,vertices,vdata,difx,dify,difz,dist,stepsize):
                 
     faces = StitchLoop(f,all_vertices,vdata,difx,dify,difz,dist,stepsize)
     
-#    print(i)
-#    print(c)
-#    print(b)
-#    print(d)
-#    faces.append(make_face(3,1,2,4,False,vdata))
     return faces
 
 def chunking(f,xmin,xmax,ymin,ymax,zmin,zmax,dist):
