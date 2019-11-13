@@ -132,7 +132,7 @@ def find_vertex_in_voxel(f,x,y,z,stepsize,cx,cy,cz):
     else:
         return (x,y,z)
     #print(len(change))
-    #get normals from gradients (actually gradients == normals, because the generated surface is on the sign change point, so the normal of the surface is the direction the value decreases a.k.a gradients)
+    #get normals from gradients (actually gradients == -normals, because the generated surface is on the sign change point, so the normal of the surface is the direction the value decreases a.k.a gradients)
     normals = []
     for v in change:
         n = makeGradients(f,v[0],v[1],v[2])
